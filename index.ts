@@ -3,6 +3,10 @@ import { access_token, bot_user, homeserver } from "./config.ts";
 
 const log = console.log;
 if (import.meta.main) {
+  if (!access_token || !bot_user || !homeserver) {
+    throw "missing params in config";
+  }
+
   const client = matrix.createClient({
     baseUrl: homeserver,
     accessToken: access_token,
