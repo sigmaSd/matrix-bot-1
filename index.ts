@@ -30,19 +30,30 @@ if (import.meta.main) {
         if (message.startsWith("!archwiki")) {
           log("looking in Arch Wiki");
           output = await arch_wiki(message.replace("!archwiki", ""));
+          log("output:", output);
+          if (output) {
+            const roomId = event.getRoomId();
+            if (roomId) {
+              await client.sendMessage(roomId, {
+                msgtype: "m.notice",
+                body: output,
+              });
+            }
+          }
         } else if (message.startsWith("!nvimhelp")) {
           log("looking in nvim help");
           output = await nvimHelp(message.replace("!nvimhelp", ""));
-        }
-
-        log("output:", output);
-        if (output) {
-          const roomId = event.getRoomId();
-          if (roomId) {
-            await client.sendMessage(roomId, {
-              msgtype: "m.notice",
-              body: output,
-            });
+          log("output:", output);
+          if (output) {
+            const roomId = event.getRoomId();
+            if (roomId) {
+              await client.sendMessage(roomId, {
+                msgtype: "m.notice",
+                format: "org.matrix.custom.html",
+                formatted_body: "<pre><code>" + output + "</code></pre>",
+                body: output,
+              });
+            }
           }
         }
       }
