@@ -17,11 +17,8 @@ if (import.meta.main) {
   client.on("event", async (event: matrix.MatrixEvent) => {
     if (!event.event.content) return;
     if (event.event.sender === bot_user) return;
-    if (event.event.unsigned?.age && event.event.unsigned.age > 5000) {
-      if (event.getType() === "m.room.message") {
-        console.log("quitting becasue age:", event.event.unsigned.age);
-      }
-      return; // older than a second * 5
+    if (event.event.unsigned?.age && event.event.unsigned.age > 1000 * 60) {
+      return; // older than a minute
     }
 
     if (event.getType() === "m.room.message") {
