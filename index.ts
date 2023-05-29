@@ -80,8 +80,8 @@ async function arch_wiki(message: string): Promise<string | undefined> {
 async function nvimHelp(param: string) {
   const someSecurity = (p: string) => p.replaceAll("|", "");
 
-  const cmd = new Deno.Command("bash", {
-    args: ["-c", `nvim -c ':help ${someSecurity(param)}'`],
+  const cmd = new Deno.Command("nvim", {
+    args: ["-c", `:help ${someSecurity(param)}`],
     stdout: "piped",
     stderr: "null",
   }).spawn();
