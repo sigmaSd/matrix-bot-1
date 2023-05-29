@@ -57,7 +57,7 @@ if (import.meta.main) {
             const roomId = event.getRoomId();
             if (roomId) {
               await client.sendMessage(roomId, {
-                msgtype: "m.notice",
+                msgtype: "m.text",
                 format: "org.matrix.custom.html",
                 formatted_body: "<pre><code>" + output + "</code></pre>",
                 body: output,
