@@ -1,6 +1,13 @@
 import matrix from "npm:matrix-js-sdk";
-import { access_token, bot_user, homeserver } from "./config.ts";
 import stripAnsi from "npm:strip-ansi";
+import {
+  access_token,
+  bot_user,
+  homeserver,
+  remove_secrets,
+} from "./config.ts";
+
+//FIXME replit have an old version of nvim
 
 const log = console.log;
 if (import.meta.main) {
@@ -13,6 +20,8 @@ if (import.meta.main) {
     accessToken: access_token,
     userId: bot_user,
   });
+
+  remove_secrets(); // remove env variables
 
   // @ts-ignore NOTE: why does this not type check
   client.on("event", async (event: matrix.MatrixEvent) => {
