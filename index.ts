@@ -44,7 +44,7 @@ if (import.meta.main) {
             const roomId = event.getRoomId();
             if (roomId) {
               await client.sendMessage(roomId, {
-                msgtype: "m.notice",
+                msgtype: "m.text",
                 body: output,
               });
             }
