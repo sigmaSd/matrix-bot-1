@@ -87,10 +87,11 @@ async function arch_wiki(message: string): Promise<string | undefined> {
 }
 
 async function nvim(param: string) {
-  const cmd = new Deno.Command("firejail", {
-    args: ["--private", "nvim", "-c", param],
+  const cmd = new Deno.Command("nvim", {
+    args: ["-c", param],
     stdout: "piped",
     stderr: "null",
+    env: { "LD_PRELOAD": Deno.cwd() + "/jail/target/debug/liblab.so" },
   }).spawn();
   await new Promise((r) => setTimeout(r, 1000));
 
