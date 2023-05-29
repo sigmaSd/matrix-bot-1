@@ -87,8 +87,8 @@ async function arch_wiki(message: string): Promise<string | undefined> {
 }
 
 async function nvim(param: string) {
-  const cmd = new Deno.Command("nvim", {
-    args: ["-c", param],
+  const cmd = new Deno.Command("firejail", {
+    args: ["--private", "nvim", "-c", param],
     stdout: "piped",
     stderr: "null",
   }).spawn();
