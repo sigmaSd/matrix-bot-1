@@ -49,9 +49,9 @@ if (import.meta.main) {
               });
             }
           }
-        } else if (message.startsWith("!nvimhelp")) {
-          log("looking in nvim help");
-          output = await nvimHelp(message.replace("!nvimhelp", ""));
+        } else if (message.startsWith("!nvim")) {
+          log("looking in nvim");
+          output = await nvim(message.replace("!nvim", ""));
           log("output:", output);
           if (output) {
             const roomId = event.getRoomId();
@@ -86,11 +86,9 @@ async function arch_wiki(message: string): Promise<string | undefined> {
     ).at(0);
 }
 
-async function nvimHelp(param: string) {
-  const someSecurity = (p: string) => p.replaceAll("|", "");
-
+async function nvim(param: string) {
   const cmd = new Deno.Command("nvim", {
-    args: ["-c", `:help ${someSecurity(param)}`],
+    args: ["-c", param],
     stdout: "piped",
     stderr: "null",
   }).spawn();
