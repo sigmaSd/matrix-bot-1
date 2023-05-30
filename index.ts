@@ -92,27 +92,10 @@ async function nvim(param: string) {
     stdout: "piped",
     stderr: "piped",
   }).output();
-  // const cmd = new Deno.Command("nvim", {
-  //   args: ["-c", param],
-  //   stdout: "piped",
-  //   stderr: "piped",
-  //   // env: { "LD_PRELOAD": Deno.cwd() + "/jail/target/release/liblab.so" },
-  // }).outputSync();
-  console.log(cmd.stdout);
-  console.log(cmd.stderr);
 
-  return new TextDecoder().decode(cmd.stderr);
-  // await new Promise((r) => setTimeout(r, 1000));
-
-  // const buf = await cmd.stdout.getReader().read();
-
-  // try {
-  //   cmd.kill();
-  // } catch { /**/ }
-
-  // return stripAnsi(new TextDecoder().decode(buf.value!))
-  //   .split(/\n/)
-  //   .slice(0, -1)
-  //   .join("\n")
-  //   .slice(6); // remove some ansi code that ddin't get stripped
+  if (cmd.stdout.length !== 0) {
+    return new TextDecoder().decode(cmd.stdout);
+  } else if (cmd.stderr.length !== 0) {
+    return new TextDecoder().decode(cmd.stderr);
+  }
 }
