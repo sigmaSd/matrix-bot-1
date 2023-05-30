@@ -98,6 +98,9 @@ async function nvim(param: string) {
   //   stderr: "piped",
   //   // env: { "LD_PRELOAD": Deno.cwd() + "/jail/target/release/liblab.so" },
   // }).outputSync();
+  console.log(cmd.stdout);
+  console.log(cmd.stderr);
+
   return new TextDecoder().decode(cmd.stderr);
   // await new Promise((r) => setTimeout(r, 1000));
 
