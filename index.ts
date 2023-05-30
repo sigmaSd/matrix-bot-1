@@ -88,7 +88,7 @@ async function arch_wiki(message: string): Promise<string | undefined> {
 
 async function nvim(param: string) {
   const cmd = await new Deno.Command("nvim", {
-    args: ["-c", param, "-c", "qa!"],
+    args: ["-c", param, "-c", "redraw", "-c", "qa!"],
     stdout: "piped",
     stderr: "piped",
   }).output();
