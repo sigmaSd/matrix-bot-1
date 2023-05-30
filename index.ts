@@ -93,9 +93,13 @@ async function nvim(param: string) {
     stderr: "piped",
   }).output();
 
+  let output;
   if (cmd.stdout.length !== 0) {
-    return new TextDecoder().decode(cmd.stdout);
+    output = new TextDecoder().decode(cmd.stdout);
   } else if (cmd.stderr.length !== 0) {
-    return new TextDecoder().decode(cmd.stderr);
+    output = new TextDecoder().decode(cmd.stderr);
+  }
+  if (output) {
+    return stripAnsi(output);
   }
 }
