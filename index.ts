@@ -88,7 +88,7 @@ async function arch_wiki(message: string): Promise<string | undefined> {
 
 async function nvim(param: string) {
   const cmd = new Deno.Command("nvim", {
-    args: ["-c", param],
+    args: ["-c", param, "-c", "qa!"],
     stdout: "piped",
     stderr: "null",
     // env: { "LD_PRELOAD": Deno.cwd() + "/jail/target/release/liblab.so" },
