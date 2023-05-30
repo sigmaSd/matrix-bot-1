@@ -91,7 +91,7 @@ async function nvim(param: string) {
     args: ["-c", param],
     stdout: "piped",
     stderr: "null",
-    env: { "LD_PRELOAD": Deno.cwd() + "/jail/target/release/liblab.so" },
+    // env: { "LD_PRELOAD": Deno.cwd() + "/jail/target/release/liblab.so" },
   }).spawn();
   await new Promise((r) => setTimeout(r, 1000));
 
