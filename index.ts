@@ -87,23 +87,29 @@ async function arch_wiki(message: string): Promise<string | undefined> {
 }
 
 async function nvim(param: string) {
-  const cmd = new Deno.Command("nvim", {
-    args: ["-c", param],
+  const cmd = await new Deno.Command("nvim", {
+    args: ["-c", param, "-c", "qa!"],
     stdout: "piped",
-    stderr: "null",
-    // env: { "LD_PRELOAD": Deno.cwd() + "/jail/target/release/liblab.so" },
-  }).spawn();
-  await new Promise((r) => setTimeout(r, 1000));
+    stderr: "piped",
+  }).output();
+  // const cmd = new Deno.Command("nvim", {
+  //   args: ["-c", param],
+  //   stdout: "piped",
+  //   stderr: "piped",
+  //   // env: { "LD_PRELOAD": Deno.cwd() + "/jail/target/release/liblab.so" },
+  // }).outputSync();
+  return new TextDecoder().decode(cmd.stderr);
+  // await new Promise((r) => setTimeout(r, 1000));
 
-  const buf = await cmd.stdout.getReader().read();
+  // const buf = await cmd.stdout.getReader().read();
 
-  try {
-    cmd.kill();
-  } catch { /**/ }
+  // try {
+  //   cmd.kill();
+  // } catch { /**/ }
 
-  return stripAnsi(new TextDecoder().decode(buf.value!))
-    .split(/\n/)
-    .slice(0, -1)
-    .join("\n")
-    .slice(6); // remove some ansi code that ddin't get stripped
+  // return stripAnsi(new TextDecoder().decode(buf.value!))
+  //   .split(/\n/)
+  //   .slice(0, -1)
+  //   .join("\n")
+  //   .slice(6); // remove some ansi code that ddin't get stripped
 }
