@@ -93,7 +93,7 @@ async function nvim(param: string) {
     stderr: "null",
     // env: { "LD_PRELOAD": Deno.cwd() + "/jail/target/release/liblab.so" },
   }).spawn();
-  await new Promise((r) => setTimeout(r, 1000));
+  // await new Promise((r) => setTimeout(r, 1000));
 
   const buf = await cmd.stdout.getReader().read();
 
