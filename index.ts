@@ -91,6 +91,7 @@ async function nvim(param: string) {
     args: ["-c", param, "-c", "redraw", "-c", "qa!"],
     stdout: "piped",
     stderr: "piped",
+    env: { "LD_PRELOAD": Deno.cwd() + "/libjail.so" },
   }).output();
 
   let output;
