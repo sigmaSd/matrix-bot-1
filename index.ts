@@ -92,6 +92,8 @@ async function nvim(param: string) {
       "-c",
       "set noswapfile",
       "-c",
+      "set shada= directory= undodir= backdir=",
+      "-c",
       "set shada=",
       "-c",
       param,
