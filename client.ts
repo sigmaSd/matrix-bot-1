@@ -10,7 +10,12 @@ import {
 //FIXME replit have an old version of nvim
 
 const log = console.log;
+
 if (import.meta.main) {
+  await main();
+}
+
+export async function main() {
   if (!access_token || !bot_user || !homeserver) {
     throw "missing params in config";
   }
@@ -90,11 +95,7 @@ async function nvim(param: string) {
   const cmd = await new Deno.Command("nvim", {
     args: [
       "-c",
-      "set noswapfile",
-      "-c",
-      "set shada= directory= undodir= backdir=",
-      "-c",
-      "set shada=",
+      "set shada= directory= undodir= backdir= shada= noswapfile",
       "-c",
       param,
       "-c",
@@ -104,7 +105,7 @@ async function nvim(param: string) {
     ],
     stdout: "piped",
     stderr: "piped",
-    env: { "LD_PRELOAD": Deno.cwd() + "/libjail.so" },
+    env: { "LD_PRELOAD": Deno.cwd() + "/nvim/jail/target/release/libjail.so" },
   }).output();
 
   let output;
