@@ -94,6 +94,8 @@ async function arch_wiki(message: string): Promise<string | undefined> {
 async function nvimEval(param: string, nvimPath: string, jailLibPath: string) {
   const cmd = await new Deno.Command(nvimPath, {
     args: [
+      "--cmd",
+      "set noswapfile",
       "-c",
       "set shada=",
       "-c",
