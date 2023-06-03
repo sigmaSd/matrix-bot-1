@@ -15,6 +15,14 @@ pub unsafe extern "C" fn open(path: *const c_char, oflag: c_int) -> c_int {
     let original_open: extern "C" fn(*const c_char, c_int) -> c_int = transmute(original_open);
 
     let cpath = ManuallyDrop::new(CString::from_raw(path as _));
+    // allow writing to a couple of special path
+    if cpath
+        .to_str()
+        .map(|s| s.starts_with("/dev/tty") || s.starts_with("/dev/pts"))
+        .unwrap_or(false)
+    {
+        return original_open(path, oflag);
+    }
     if parse_open_flags(oflag) == -1 {
         eprintln!("denied write to: {:?}\n", &cpath);
         return -1;
