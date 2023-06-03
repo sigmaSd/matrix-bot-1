@@ -94,14 +94,11 @@ async function arch_wiki(message: string): Promise<string | undefined> {
 async function nvimEval(param: string, nvimPath: string, jailLibPath: string) {
   const cmd = await new Deno.Command(nvimPath, {
     args: [
-      "--cmd",
-      "set noswapfile",
+      "--headless",
       "-c",
-      "set shada=",
+      "so matrix-bot-1/nvim/screendump.lua",
       "-c",
       param,
-      "-c",
-      "redraw",
       "-c",
       "qa!",
     ],
