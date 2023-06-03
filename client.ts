@@ -67,7 +67,7 @@ export async function main(
           log("output:", output);
           if (output) {
             const roomId = event.getRoomId();
-            const capedOutput = output.slice(65 * 1024 / 2);
+            const capedOutput = output.slice(0, 65 * 1024 / 2);
             if (roomId) {
               try {
                 await client.sendMessage(roomId, {
