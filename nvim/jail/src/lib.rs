@@ -14,9 +14,9 @@ pub unsafe extern "C" fn open(path: *const c_char, oflag: c_int) -> c_int {
     #[allow(unused_variables)]
     let original_open: extern "C" fn(*const c_char, c_int) -> c_int = transmute(original_open);
 
-    let cpath = ManuallyDrop::new(CString::from_raw(path as _));
+    let _cpath = ManuallyDrop::new(CString::from_raw(path as _));
     if parse_open_flags(oflag) == -1 {
-        eprintln!("denied write to: {:?}\n", &cpath);
+        // eprintln!("denied write to: {:?}\n", &cpath);
         return -1;
     };
 
