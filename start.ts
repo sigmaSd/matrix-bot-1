@@ -12,7 +12,7 @@ await $`cargo b --release --offline --target-dir target`
     "./matrix-bot-1/nvim/jail",
   );
 
-// keep replit instance alive
+// keep replit instance alive (using uptimerobot to keep fetchig this server)
 serve(() => new Response("", { status: 200 }), { port: 8080 });
 
 // start matrix client
