@@ -77,12 +77,12 @@ export async function main(
                   body: capedOutput,
                 });
               } catch (error) {
-                if (error instanceof PayloadTooLargeError) {
-                  await client.sendMessage(roomId, {
-                    msgtype: "m.text",
-                    body: `Message too long: ${capedOutput.length}`,
-                  });
-                }
+                // if (error instanceof PayloadTooLargeError) {
+                await client.sendMessage(roomId, {
+                  msgtype: "m.text",
+                  body: `Message too long: ${capedOutput.length}`,
+                });
+                // }
               }
             }
           }
