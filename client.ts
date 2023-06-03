@@ -7,6 +7,13 @@ import {
   remove_secrets,
 } from "./config.ts";
 
+export class PayloadTooLargeError extends Error {
+  public readonly data = {
+    errcode: "M_TOO_LARGE",
+    error: "Payload too large for encrypted message",
+  };
+}
+
 const log = console.log;
 
 export async function main(
@@ -60,13 +67,23 @@ export async function main(
           log("output:", output);
           if (output) {
             const roomId = event.getRoomId();
+            const capedOutput = output.slice(65 * 1024 / 2);
             if (roomId) {
-              await client.sendMessage(roomId, {
-                msgtype: "m.text",
-                format: "org.matrix.custom.html",
-                formatted_body: "<pre><code>" + output + "</code></pre>",
-                body: output,
-              });
+              try {
+                await client.sendMessage(roomId, {
+                  msgtype: "m.text",
+                  format: "org.matrix.custom.html",
+                  formatted_body: "<pre><code>" + capedOutput + "</code></pre>",
+                  body: capedOutput,
+                });
+              } catch (error) {
+                if (error instanceof PayloadTooLargeError) {
+                  await client.sendMessage(roomId, {
+                    msgtype: "m.text",
+                    body: `Message too long: ${capedOutput.length}`,
+                  });
+                }
+              }
             }
           }
         }
