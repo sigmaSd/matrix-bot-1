@@ -1,5 +1,4 @@
 import matrix from "npm:matrix-js-sdk";
-import stripAnsi from "npm:strip-ansi";
 import {
   access_token,
   bot_user,
@@ -134,6 +133,6 @@ async function nvimEval(param: string, nvimPath: string, jailLibPath: string) {
     output = new TextDecoder().decode(cmd.stderr);
   }
   if (output) {
-    return stripAnsi(output);
+    return (output);
   }
 }

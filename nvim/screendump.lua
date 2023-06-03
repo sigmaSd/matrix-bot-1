@@ -18,7 +18,7 @@ for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
 end
 
 for _, line in ipairs(lines) do
-  print(line)
+  print(string.gsub(line, "\t", "    "))
 end
 
 -- nvim --headless -c 'so screendump.lua' -c 'qa!'
