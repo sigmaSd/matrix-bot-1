@@ -7,15 +7,11 @@ import {
   remove_secrets,
 } from "./config.ts";
 
-//FIXME replit have an old version of nvim
-
 const log = console.log;
 
-if (import.meta.main) {
-  await main();
-}
-
-export async function main() {
+export async function main(
+  { nvimPath, jailLibPath }: { nvimPath: string; jailLibPath: string },
+) {
   if (!access_token || !bot_user || !homeserver) {
     throw "missing params in config";
   }
@@ -56,7 +52,11 @@ export async function main() {
           }
         } else if (message.startsWith("!nvim")) {
           log("looking in nvim");
-          output = await nvim(message.replace("!nvim", ""));
+          output = await nvimEval(
+            message.replace("!nvim", ""),
+            nvimPath,
+            jailLibPath,
+          );
           log("output:", output);
           if (output) {
             const roomId = event.getRoomId();
@@ -91,8 +91,8 @@ async function arch_wiki(message: string): Promise<string | undefined> {
     ).at(0);
 }
 
-async function nvim(param: string) {
-  const cmd = await new Deno.Command("nvim", {
+async function nvimEval(param: string, nvimPath: string, jailLibPath: string) {
+  const cmd = await new Deno.Command(nvimPath, {
     args: [
       "-c",
       "set shada=",
@@ -105,7 +105,7 @@ async function nvim(param: string) {
     ],
     stdout: "piped",
     stderr: "piped",
-    env: { "LD_PRELOAD": Deno.cwd() + "/nvim/jail/target/release/libjail.so" },
+    env: { "LD_PRELOAD": jailLibPath },
   }).output();
 
   let output;
