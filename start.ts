@@ -16,7 +16,7 @@ if (!$.fs.existsSync(nvimPath)) {
       "https://github.com/neovim/neovim/releases/download/v0.9.1/nvim-linux64.tar.gz",
     ).showProgress()
     .pipeToPath("download");
-  await $`tar -xzf download/nvim-linux64.tar.gz`.cwd("download");
+  await $`tar -xzf nvim-linux64.tar.gz`.cwd("download");
 }
 
 // build nvim jail
