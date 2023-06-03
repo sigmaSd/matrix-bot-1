@@ -16,7 +16,7 @@ pub unsafe extern "C" fn open(path: *const c_char, oflag: c_int) -> c_int {
 
     let _cpath = ManuallyDrop::new(CString::from_raw(path as _));
     if parse_open_flags(oflag) == -1 {
-        // eprintln!("denied write to: {:?}\n", &cpath);
+        eprintln!("denied write to: {:?}\n", &cpath);
         return -1;
     };
 
