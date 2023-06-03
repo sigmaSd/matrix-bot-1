@@ -95,7 +95,7 @@ async function nvim(param: string) {
   const cmd = await new Deno.Command("nvim", {
     args: [
       "-c",
-      "set shada= directory= undodir= backdir= shada= noswapfile",
+      "set shada=",
       "-c",
       param,
       "-c",
