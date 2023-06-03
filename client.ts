@@ -72,7 +72,7 @@ export async function main(
                 await client.sendMessage(roomId, {
                   msgtype: "m.text",
                   format: "org.matrix.custom.html",
-                  formatted_body: '<pre><code class="language-md">' +
+                  formatted_body: "<pre><code>" +
                     capedOutput + "</code></pre>",
                   body: capedOutput,
                 });
