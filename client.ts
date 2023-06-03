@@ -6,13 +6,6 @@ import {
   remove_secrets,
 } from "./config.ts";
 
-export class PayloadTooLargeError extends Error {
-  public readonly data = {
-    errcode: "M_TOO_LARGE",
-    error: "Payload too large for encrypted message",
-  };
-}
-
 const log = console.log;
 
 export async function main(
@@ -76,13 +69,8 @@ export async function main(
                     capedOutput + "</code></pre>",
                   body: capedOutput,
                 });
-              } catch (_error) {
-                // if (error instanceof PayloadTooLargeError) {
-                await client.sendMessage(roomId, {
-                  msgtype: "m.text",
-                  body: `Message too long: ${capedOutput.length}`,
-                });
-                // }
+              } catch (error) {
+                console.error("failed to send message:", error);
               }
             }
           }
@@ -92,7 +80,7 @@ export async function main(
   });
 
   await client.startClient();
-  console.log("Client Started");
+  log("Client Started");
 }
 
 async function arch_wiki(message: string): Promise<string | undefined> {
@@ -113,6 +101,7 @@ async function nvimEval(param: string, nvimPath: string, jailLibPath: string) {
     args: [
       "--headless",
       "-c",
+      //FIXME: remove the hardcoded path
       "so matrix-bot-1/nvim/screendump.lua",
       "-c",
       "set shada=",
