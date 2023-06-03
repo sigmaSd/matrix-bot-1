@@ -27,7 +27,9 @@ await $`rm -rf matrix-bot-1`.noThrow();
 await $`git clone https://github.com/sigmaSd/matrix-bot-1`;
 
 // build jail
-await $`cargo b --release --offline --target-dir target`.cwd("./nvim/jail");
+await $`cargo b --release --offline --target-dir target`.cwd(
+  "./matrix-bot-1/nvim/jail",
+).printCommand();
 
 // keep replit instance alive
 //FIXME: start a server here
