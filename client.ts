@@ -99,7 +99,7 @@ async function nvimEval(param: string, nvimPath: string, jailLibPath: string) {
       "so matrix-bot-1/nvim/screendump.lua",
       "-c",
       "set shada=",
-      "-c",
+      "--cmd",
       param,
       "-c",
       "qa!",
