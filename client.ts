@@ -100,6 +100,22 @@ export async function main(
               }
             }
           }
+        } else if (message.startsWith("!help")) {
+          log("executing help");
+          const output =
+            "!archwiki <input>\n!nvim <input>\n!deno <input>\n!help <input>";
+          log("output:", output);
+          const roomId = event.getRoomId();
+          if (roomId) {
+            try {
+              await client.sendMessage(roomId, {
+                msgtype: "m.text",
+                body: output,
+              });
+            } catch (error) {
+              console.error("failed to send message:", error);
+            }
+          }
         }
       }
     }
