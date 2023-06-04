@@ -178,7 +178,7 @@ async function denoEval(input: string, denoPath: string): Promise<string> {
   const f = await Deno.makeTempFile();
   await Deno.writeTextFile(f, input);
   const output = await new Deno.Command(denoPath, {
-    args: ["run", f],
+    args: ["run", "--allow-read", "--allow-net", f],
     env: { "NO_COLOR": "1" },
   })
     .output();
