@@ -9,7 +9,11 @@ import {
 const log = console.log;
 
 export async function main(
-  { nvimPath, jailLibPath }: { nvimPath: string; jailLibPath: string },
+  { nvimPath, jailLibPath, denoPath }: {
+    nvimPath: string;
+    jailLibPath: string;
+    denoPath: string;
+  },
 ) {
   if (!access_token || !bot_user || !homeserver) {
     throw "missing params in config";
@@ -35,10 +39,9 @@ export async function main(
       const message: string | undefined = event.event.content?.body;
       log("room message:", message);
       if (message) {
-        let output;
         if (message.startsWith("!archwiki")) {
           log("looking in Arch Wiki");
-          output = await arch_wiki(message.replace("!archwiki", ""));
+          const output = await arch_wiki(message.replace("!archwiki", ""));
           log("output:", output);
           if (output) {
             const roomId = event.getRoomId();
@@ -51,7 +54,7 @@ export async function main(
           }
         } else if (message.startsWith("!nvim")) {
           log("looking in nvim");
-          output = await nvimEval(
+          const output = await nvimEval(
             message.replace("!nvim", ""),
             nvimPath,
             jailLibPath,
@@ -68,6 +71,29 @@ export async function main(
                   formatted_body: "<pre><code>" +
                     capedOutput + "</code></pre>",
                   body: capedOutput,
+                });
+              } catch (error) {
+                console.error("failed to send message:", error);
+              }
+            }
+          }
+        } else if (message.startsWith("!deno")) {
+          log("executing deno");
+          const output = await denoEval(
+            message.replace("!deno", ""),
+            denoPath,
+          );
+          log("output:", output);
+          if (output) {
+            const roomId = event.getRoomId();
+            if (roomId) {
+              try {
+                await client.sendMessage(roomId, {
+                  msgtype: "m.text",
+                  format: "org.matrix.custom.html",
+                  formatted_body: '<pre><code class="language-ts">' +
+                    output + "</code></pre>",
+                  body: output,
                 });
               } catch (error) {
                 console.error("failed to send message:", error);
@@ -124,4 +150,17 @@ async function nvimEval(param: string, nvimPath: string, jailLibPath: string) {
   if (output) {
     return (output);
   }
+}
+
+async function denoEval(input: string, denoPath: string): Promise<string> {
+  const f = await Deno.makeTempFile();
+  await Deno.writeTextFile(f, input);
+  const output = await new Deno.Command(denoPath, { args: ["run", f] })
+    .output();
+  await Deno.remove(f);
+
+  if (output.stdout.length !== 0) {
+    return new TextDecoder().decode(output.stdout);
+  }
+  return new TextDecoder().decode(output.stderr);
 }

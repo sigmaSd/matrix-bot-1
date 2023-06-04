@@ -32,5 +32,6 @@ const jailLibPath = Deno.cwd() +
 // keep replit instance alive (using uptimerobot to keep fetchig this server)
 serve(() => new Response("", { status: 200 }), { port: 8080 });
 
+const denoPath = Deno.args[0] ?? "deno";
 // start matrix client
-await clientMain({ nvimPath, jailLibPath });
+await clientMain({ nvimPath, jailLibPath, denoPath });
