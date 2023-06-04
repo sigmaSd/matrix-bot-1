@@ -103,7 +103,7 @@ export async function main(
         } else if (message.startsWith("!help")) {
           log("executing help");
           const output =
-            "!archwiki <input>\n!nvim <input>\n!deno <input>\n!help <input>";
+            "!archwiki <input>\n!nvim <input>\n!deno <input>\n!help";
           log("output:", output);
           const roomId = event.getRoomId();
           if (roomId) {
