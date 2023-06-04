@@ -171,7 +171,10 @@ async function nvimEval(param: string, nvimPath: string, jailLibPath: string) {
 async function denoEval(input: string, denoPath: string): Promise<string> {
   const f = await Deno.makeTempFile();
   await Deno.writeTextFile(f, input);
-  const output = await new Deno.Command(denoPath, { args: ["run", f] })
+  const output = await new Deno.Command(denoPath, {
+    args: ["run", f],
+    env: { "NO_COLOR": "1" },
+  })
     .output();
   await Deno.remove(f);
 
