@@ -169,6 +169,7 @@ async function nvimEval(param: string, nvimPath: string, jailLibPath: string) {
 }
 
 async function denoEval(input: string, denoPath: string): Promise<string> {
+  input = input.trim();
   // special case markdown markers
   if (input.startsWith("```")) {
     input = input.split("\n").slice(1, -1).join("\n");
