@@ -20,7 +20,7 @@ export abstract class MatrixCommand {
 
 export class DenoCommand extends MatrixCommand {
   override trigger = "!deno";
-  static override description = "Evaluate deno code: `!deno <input>`";
+  static override description = "Evaluate deno code: `!deno \<input\>`";
 
   constructor(public denoPath: string) {
     super();
@@ -68,7 +68,7 @@ export class DenoCommand extends MatrixCommand {
 
 export class ArchWikiCommand extends MatrixCommand {
   override trigger = "!archwiki";
-  static override description = "Search in arch wiki: `!archwiki <input>`";
+  static override description = "Search in arch wiki: `!archwiki \<input\>`";
 
   protected override async run(
     input: string,
@@ -96,7 +96,7 @@ export class ArchWikiCommand extends MatrixCommand {
 
 export class NvimEvalCommand extends MatrixCommand {
   override trigger = "!nvim";
-  static override description = "Evaluate code in nvim: `!nvim <input>`";
+  static override description = "Evaluate code in nvim: `!nvim \<input\>`";
   constructor(public nvimPath: string, public jailLibPath: string) {
     super();
   }
