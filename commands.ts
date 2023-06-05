@@ -2,6 +2,7 @@ import matrix from "npm:matrix-js-sdk";
 
 export abstract class MatrixCommand {
   protected abstract trigger: string;
+  static description: string;
 
   async try_run(
     input: string,
@@ -19,6 +20,8 @@ export abstract class MatrixCommand {
 
 export class DenoCommand extends MatrixCommand {
   override trigger = "!deno";
+  static override description = "Evaluate deno code: `!deno <input>`";
+
   constructor(public denoPath: string) {
     super();
   }
@@ -65,6 +68,7 @@ export class DenoCommand extends MatrixCommand {
 
 export class ArchWikiCommand extends MatrixCommand {
   override trigger = "!archwiki";
+  static override description = "Search in arch wiki: `!archwiki <input>`";
 
   protected override async run(
     input: string,
@@ -92,6 +96,7 @@ export class ArchWikiCommand extends MatrixCommand {
 
 export class NvimEvalCommand extends MatrixCommand {
   override trigger = "!nvim";
+  static override description = "Evaluate code in nvim: `!nvim <input>`";
   constructor(public nvimPath: string, public jailLibPath: string) {
     super();
   }
@@ -143,5 +148,26 @@ export class NvimEvalCommand extends MatrixCommand {
     if (output) {
       return (output);
     }
+  }
+}
+
+export class HelpCommand extends MatrixCommand {
+  override trigger = "!help";
+  static override description = "Show Help: `!help`";
+
+  protected override run(
+    _input: string,
+  ): Promise<matrix.IContent> {
+    const output = [ArchWikiCommand, DenoCommand, NvimEvalCommand, HelpCommand]
+      .map((cmd) => cmd.description)
+      .join("\n");
+
+    return Promise.resolve({
+      msgtype: "m.text",
+      format: "org.matrix.custom.html",
+      formatted_body: "<pre><code>" +
+        output + "</code></pre>",
+      body: output,
+    });
   }
 }
