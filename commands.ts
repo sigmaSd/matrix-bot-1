@@ -20,7 +20,7 @@ export abstract class MatrixCommand {
 
 export class DenoCommand extends MatrixCommand {
   override trigger = "!deno";
-  static override description = "Evaluate deno code: `!deno \<input\>`";
+  static override description = "`!deno [input]`: Evaluate deno code";
 
   constructor(public denoPath: string) {
     super();
@@ -68,7 +68,7 @@ export class DenoCommand extends MatrixCommand {
 
 export class ArchWikiCommand extends MatrixCommand {
   override trigger = "!archwiki";
-  static override description = "Search in arch wiki: `!archwiki \<input\>`";
+  static override description = "`!archwiki [input]`: Search in arch wiki";
 
   protected override async run(
     input: string,
@@ -96,7 +96,7 @@ export class ArchWikiCommand extends MatrixCommand {
 
 export class NvimEvalCommand extends MatrixCommand {
   override trigger = "!nvim";
-  static override description = "Evaluate code in nvim: `!nvim \<input\>`";
+  static override description = "`!nvim [input]`: Evaluate code in nvim";
   constructor(public nvimPath: string, public jailLibPath: string) {
     super();
   }
@@ -153,12 +153,12 @@ export class NvimEvalCommand extends MatrixCommand {
 
 export class HelpCommand extends MatrixCommand {
   override trigger = "!help";
-  static override description = "Show Help: `!help`";
+  static override description = "`!help`: Show Help";
 
   protected override run(
     _input: string,
   ): Promise<matrix.IContent> {
-    const header = `**IBot**
+    const header = `IBot
 
 code: https://github.com/sigmaSd/matrix-bot-1
 hosted-on: https://replit.com/@sigmasd/matrixBot
