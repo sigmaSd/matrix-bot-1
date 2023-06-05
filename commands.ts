@@ -91,7 +91,7 @@ export class ArchWikiCommand extends MatrixCommand {
 }
 
 export class NvimEvalCommand extends MatrixCommand {
-  override trigger = "!nvimeval";
+  override trigger = "!nvim";
   constructor(public nvimPath: string, public jailLibPath: string) {
     super();
   }
