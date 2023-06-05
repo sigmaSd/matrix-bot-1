@@ -8,6 +8,7 @@ import {
 import {
   ArchWikiCommand,
   DenoCommand,
+  HelpCommand,
   MatrixCommand,
   NvimEvalCommand,
 } from "./commands.ts";
@@ -35,6 +36,7 @@ export async function main(
     new DenoCommand(denoPath),
     new NvimEvalCommand(nvimPath, jailLibPath),
     new ArchWikiCommand(),
+    new HelpCommand(),
   ];
 
   // @ts-ignore NOTE: why does this not type check
