@@ -177,9 +177,13 @@ async function denoEval(input: string, denoPath: string): Promise<string> {
 
   const f = await Deno.makeTempFile();
   await Deno.writeTextFile(f, input);
+
+  const controller = new AbortController();
+  setTimeout(() => controller.abort(), 5000); // timeout
   const output = await new Deno.Command(denoPath, {
     args: ["run", "--allow-read", "--allow-net", f],
     env: { "NO_COLOR": "1" },
+    signal: controller.signal,
   })
     .output();
   await Deno.remove(f);
