@@ -158,6 +158,13 @@ export class HelpCommand extends MatrixCommand {
   protected override run(
     _input: string,
   ): Promise<matrix.IContent> {
+    const header = `**IBot**
+
+code: https://github.com/sigmaSd/matrix-bot-1
+hosted-on: https://replit.com/@sigmasd/matrixBot
+
+commands:
+`;
     const output = [ArchWikiCommand, DenoCommand, NvimEvalCommand, HelpCommand]
       .map((cmd) => cmd.description)
       .join("\n");
@@ -166,8 +173,8 @@ export class HelpCommand extends MatrixCommand {
       msgtype: "m.text",
       format: "org.matrix.custom.html",
       formatted_body: "<pre><code>" +
-        output + "</code></pre>",
-      body: output,
+        header + output + "</code></pre>",
+      body: header + output,
     });
   }
 }
