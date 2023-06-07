@@ -148,7 +148,7 @@ export class QrCommand extends MatrixCommand {
   ): Promise<matrix.IContent | undefined> {
     try {
       const gifBytes = await qrcode(input, { size: 250 }).then((out) =>
-        //@ts-ignore FIXME: QRcode is string?
+        //@ts-ignore  (upstream types are not uptodate)
         this.gifDataToBytes(out)
       );
       // upload the image
