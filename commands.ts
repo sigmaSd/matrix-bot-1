@@ -146,20 +146,24 @@ export class QrCommand extends MatrixCommand {
   protected override async run(
     input: string,
   ): Promise<matrix.IContent | undefined> {
-    const gifBytes = await qrcode(input, { size: 250 }).then((out) =>
-      //@ts-ignore FIXME: QRcode is string?
-      this.gifDataToBytes(out)
-    );
-    // upload the image
-    const content_uri = await this.client.uploadContent(gifBytes, {
-      type: "image/gif",
-    }).then((r) => r.content_uri);
+    try {
+      const gifBytes = await qrcode(input, { size: 250 }).then((out) =>
+        //@ts-ignore FIXME: QRcode is string?
+        this.gifDataToBytes(out)
+      );
+      // upload the image
+      const content_uri = await this.client.uploadContent(gifBytes, {
+        type: "image/gif",
+      }).then((r) => r.content_uri);
 
-    return {
-      msgtype: "m.image",
-      url: content_uri,
-      body: "QR",
-    };
+      return {
+        msgtype: "m.image",
+        url: content_uri,
+        body: "QR",
+      };
+    } catch (e) {
+      console.error("failed to run QrCommand:", e);
+    }
   }
 
   gifDataToBytes(gifData: string): Uint8Array {
