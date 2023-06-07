@@ -97,6 +97,34 @@ export class ArchWikiCommand extends MatrixCommand {
   }
 }
 
+export class RequestCommand extends MatrixCommand {
+  override trigger = "!request";
+  static override description = "`!request [input]`: ";
+
+  protected override async run(
+    input: string,
+  ): Promise<matrix.IContent | undefined> {
+    const output = await this.archWiki(input);
+    if (!output) return;
+    return {
+      msgtype: "m.text",
+      body: output,
+    };
+  }
+
+  async archWiki(message: string): Promise<string | undefined> {
+    const resp = await fetch(
+      `https://wiki.archlinux.org/rest.php/v1/search/title?q=${message}&limit=1`,
+    ).then((r) => r.json());
+    return resp.pages
+      // deno-lint-ignore no-explicit-any
+      .map((output: any) => output.title)
+      .map((title: string) =>
+        `https://wiki.archlinux.org/title/${encodeURIComponent(title)}`
+      ).at(0);
+  }
+}
+
 /** Encode input into a QR image
  *
  * Note: needs `MatrixClient` to upload the image
@@ -112,7 +140,7 @@ export class QrCommand extends MatrixCommand {
   protected override async run(
     input: string,
   ): Promise<matrix.IContent | undefined> {
-    const gifBytes = await qrcode(input).then((out) =>
+    const gifBytes = await qrcode(input, { size: 250 }).then((out) =>
       //@ts-ignore FIXME: QRcode is string?
       this.gifDataToBytes(out)
     );
@@ -215,8 +243,8 @@ commands:
       ArchWikiCommand,
       DenoCommand,
       NvimEvalCommand,
-      HelpCommand,
       QrCommand,
+      HelpCommand, // make sure help is the last one
     ]
       .map((cmd) => cmd.description)
       .join("\n");
