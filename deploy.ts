@@ -7,9 +7,10 @@ if (import.meta.main) {
   const latestTag = await $`git describe --tags --abbrev=0`.text();
   const nextTag = nextSemver(latestTag);
 
-  await $`git add . && git commit -m "${commit}"`.noThrow(
-    Deno.env.get("FORCE") ? true : false,
-  );
+  await $`git add . && git commit -m "${commit}"`
+    .noThrow(
+      Deno.env.get("FORCE") ? true : false,
+    );
   await $`git tag -a ${nextTag} -m ${commit} && git push --follow-tags`;
 }
 
