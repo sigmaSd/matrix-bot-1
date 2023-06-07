@@ -1,4 +1,5 @@
-import matrix from "npm:matrix-js-sdk";
+import matrix, { MatrixClient } from "npm:matrix-js-sdk";
+import { qrcode } from "https://deno.land/x/qrcode@v2.0.0/mod.ts";
 
 export abstract class MatrixCommand {
   protected abstract trigger: string;
@@ -9,7 +10,9 @@ export abstract class MatrixCommand {
   ): Promise<matrix.IContent | undefined> {
     input = input.trim();
     if (input.startsWith(this.trigger)) {
-      return await this.run(input.replace(this.trigger, "").trimStart());
+      return await this.run(
+        input.replace(this.trigger, "").trimStart(),
+      );
     }
   }
 
@@ -94,6 +97,49 @@ export class ArchWikiCommand extends MatrixCommand {
   }
 }
 
+/** Encode input into a QR image
+ *
+ * Note: needs `MatrixClient` to upload the image
+ */
+export class QrCommand extends MatrixCommand {
+  override trigger = "!qr";
+  static override description = "`!qr [input]`: encode input into a QR image";
+
+  constructor(public client: MatrixClient) {
+    super();
+  }
+
+  protected override async run(
+    input: string,
+  ): Promise<matrix.IContent | undefined> {
+    const gifBytes = await qrcode(input).then((out) =>
+      //@ts-ignore FIXME: QRcode is string?
+      this.gifDataToBytes(out)
+    );
+    // upload the image
+    const content_uri = await this.client.uploadContent(gifBytes, {
+      type: "image/gif",
+    }).then((r) => r.content_uri);
+
+    return {
+      msgtype: "m.image",
+      url: content_uri,
+      body: "QR",
+    };
+  }
+
+  gifDataToBytes(gifData: string): Uint8Array {
+    const decodedData = atob(gifData.slice(22));
+
+    const binaryArray = new Uint8Array(decodedData.length);
+    for (let i = 0; i < decodedData.length; i++) {
+      binaryArray[i] = decodedData.charCodeAt(i);
+    }
+
+    return binaryArray;
+  }
+}
+
 export class NvimEvalCommand extends MatrixCommand {
   override trigger = "!nvim";
   static override description = "`!nvim [input]`: Evaluate code in nvim";
@@ -165,7 +211,13 @@ hosted-on: https://replit.com/@sigmasd/matrixBot
 
 commands:
 `;
-    const output = [ArchWikiCommand, DenoCommand, NvimEvalCommand, HelpCommand]
+    const output = [
+      ArchWikiCommand,
+      DenoCommand,
+      NvimEvalCommand,
+      HelpCommand,
+      QrCommand,
+    ]
       .map((cmd) => cmd.description)
       .join("\n");
 

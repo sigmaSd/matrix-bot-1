@@ -11,6 +11,7 @@ import {
   HelpCommand,
   MatrixCommand,
   NvimEvalCommand,
+  QrCommand,
 } from "./commands.ts";
 
 export async function main(
@@ -37,6 +38,7 @@ export async function main(
     new NvimEvalCommand(nvimPath, jailLibPath),
     new ArchWikiCommand(),
     new HelpCommand(),
+    new QrCommand(client),
   ];
 
   // @ts-ignore NOTE: why does this not type check
