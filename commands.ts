@@ -1,5 +1,6 @@
 import matrix, { MatrixClient } from "npm:matrix-js-sdk";
 import { qrcode } from "https://deno.land/x/qrcode@v2.0.0/mod.ts";
+import { ensureFile } from "https://deno.land/std@0.182.0/fs/ensure_file.ts";
 
 export abstract class MatrixCommand {
   protected abstract trigger: string;
@@ -99,29 +100,34 @@ export class ArchWikiCommand extends MatrixCommand {
 
 export class RequestCommand extends MatrixCommand {
   override trigger = "!request";
-  static override description = "`!request [input]`: ";
+  static override description =
+    "`!request [input]`: Request a new command, your input will be appended to a TODO file";
 
   protected override async run(
     input: string,
   ): Promise<matrix.IContent | undefined> {
-    const output = await this.archWiki(input);
-    if (!output) return;
-    return {
-      msgtype: "m.text",
-      body: output,
-    };
-  }
-
-  async archWiki(message: string): Promise<string | undefined> {
-    const resp = await fetch(
-      `https://wiki.archlinux.org/rest.php/v1/search/title?q=${message}&limit=1`,
-    ).then((r) => r.json());
-    return resp.pages
-      // deno-lint-ignore no-explicit-any
-      .map((output: any) => output.title)
-      .map((title: string) =>
-        `https://wiki.archlinux.org/title/${encodeURIComponent(title)}`
-      ).at(0);
+    await ensureFile("./TODO");
+    const output = "requests:\n\n" + await Deno.readTextFile("./TODO");
+    if (input.length === 0) {
+      return {
+        msgtype: "m.text",
+        format: "org.matrix.custom.html",
+        formatted_body: "<pre><code>" +
+          output + "</code></pre>",
+        body: output,
+      };
+    } else {
+      const file = await Deno.open("./TODO", { write: true, append: true });
+      await file.write(
+        //NOTE: probably more sanitizing needs to happen
+        new TextEncoder().encode(input.replaceAll("\n", "") + "\n"),
+      );
+      const output = "OK your request have been noted!";
+      return {
+        msgtype: "m.text",
+        body: output,
+      };
+    }
   }
 }
 
@@ -244,6 +250,7 @@ commands:
       DenoCommand,
       NvimEvalCommand,
       QrCommand,
+      RequestCommand,
       HelpCommand, // make sure help is the last one
     ]
       .map((cmd) => cmd.description)
