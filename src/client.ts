@@ -16,12 +16,20 @@ import {
 } from "./commands.ts";
 
 export async function main(
-  { nvimPath, jailLibPath, nvimSourceFile, denoPath, commandTrigger }: {
-    nvimPath: string;
-    nvimSourceFile: string | undefined;
-    jailLibPath: string | undefined;
-    denoPath: string;
+  {
+    commandTrigger,
+    nvim: { nvimPath, jailLibPath, nvimSourceFile },
+    deno: { denoPath },
+  }: {
     commandTrigger: string;
+    nvim: {
+      nvimPath: string;
+      nvimSourceFile: string | undefined;
+      jailLibPath: string | undefined;
+    };
+    deno: {
+      denoPath: string;
+    };
   },
 ) {
   if (!access_token || !bot_user || !homeserver) {

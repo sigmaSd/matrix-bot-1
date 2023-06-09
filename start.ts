@@ -41,10 +41,14 @@ if (import.meta.main) {
 
   // start matrix client
   await clientMain({
-    nvimPath,
-    jailLibPath,
-    nvimSourceFile,
-    denoPath,
     commandTrigger,
+    nvim: {
+      nvimPath,
+      jailLibPath,
+      nvimSourceFile,
+    },
+    deno: {
+      denoPath,
+    },
   });
 }
