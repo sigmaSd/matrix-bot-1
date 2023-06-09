@@ -187,7 +187,7 @@ export class NvimEvalCommand extends MatrixCommand {
   constructor(
     public commandTrigger: string,
     public nvimPath: string,
-    public jailLibPath: string,
+    public jailLibPath: string | undefined,
   ) {
     super(commandTrigger);
   }
@@ -211,7 +211,11 @@ export class NvimEvalCommand extends MatrixCommand {
     };
   }
 
-  async nvimEval(param: string, nvimPath: string, jailLibPath: string) {
+  async nvimEval(
+    param: string,
+    nvimPath: string,
+    jailLibPath: string | undefined,
+  ) {
     const cmd = await new Deno.Command(nvimPath, {
       args: [
         "--headless",
@@ -227,7 +231,7 @@ export class NvimEvalCommand extends MatrixCommand {
       ],
       stdout: "piped",
       stderr: "piped",
-      env: { "LD_PRELOAD": jailLibPath },
+      env: jailLibPath ? { "LD_PRELOAD": jailLibPath } : {},
     }).output();
 
     let output;

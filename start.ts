@@ -27,8 +27,6 @@ if (import.meta.main) {
     .cwd(
       "./matrix-bot-1/nvim/jail",
     );
-  const jailLibPath = Deno.cwd() +
-    "/matrix-bot-1/nvim/jail/target/release/libjail.so";
 
   // keep replit instance alive (using uptimerobot to keep fetchig this server)
   serve(() => new Response("", { status: 200 }), { port: 8080 });
@@ -36,6 +34,10 @@ if (import.meta.main) {
   const args = parse(Deno.args);
   const denoPath = args["deno"] ?? "deno";
   const commandTrigger = args["trigger"] ?? "!";
+  const jailLibPath = args["--nvim-jail"]
+    ? Deno.cwd() +
+      "/matrix-bot-1/nvim/jail/target/release/libjail.so"
+    : undefined;
   // start matrix client
   await clientMain({ nvimPath, jailLibPath, denoPath, commandTrigger });
 }

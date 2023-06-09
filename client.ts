@@ -18,7 +18,7 @@ import {
 export async function main(
   { nvimPath, jailLibPath, denoPath, commandTrigger }: {
     nvimPath: string;
-    jailLibPath: string;
+    jailLibPath: string | undefined;
     denoPath: string;
     commandTrigger: string;
   },
