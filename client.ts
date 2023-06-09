@@ -16,10 +16,11 @@ import {
 } from "./commands.ts";
 
 export async function main(
-  { nvimPath, jailLibPath, denoPath }: {
+  { nvimPath, jailLibPath, denoPath, commandTrigger }: {
     nvimPath: string;
     jailLibPath: string;
     denoPath: string;
+    commandTrigger: string;
   },
 ) {
   if (!access_token || !bot_user || !homeserver) {
@@ -35,12 +36,12 @@ export async function main(
   remove_secrets(); // remove env variables
 
   const commands: MatrixCommand[] = [
-    new DenoCommand(denoPath),
-    new NvimEvalCommand(nvimPath, jailLibPath),
-    new ArchWikiCommand(),
-    new QrCommand(client),
-    new RequestCommand(),
-    new HelpCommand(),
+    new DenoCommand(commandTrigger, denoPath),
+    new NvimEvalCommand(commandTrigger, nvimPath, jailLibPath),
+    new ArchWikiCommand(commandTrigger),
+    new QrCommand(commandTrigger, client),
+    new RequestCommand(commandTrigger),
+    new HelpCommand(commandTrigger),
   ];
 
   // @ts-ignore NOTE: why does this not type check

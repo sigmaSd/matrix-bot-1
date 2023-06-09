@@ -1,37 +1,41 @@
-import { $ } from "https://deno.land/x/dax@0.31.1/mod.ts";
-import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { $ } from "https://deno.land/x/dax@0.32.0/mod.ts";
+import { serve } from "https://deno.land/std@0.191.0/http/server.ts";
 import { main as clientMain } from "./client.ts";
-// import { ensureDirSync } from "https://deno.land/std@0.190.0/fs/ensure_dir.ts";
+import { parse } from "https://deno.land/std@0.191.0/flags/mod.ts";
 
-// clean up and clone repo
-await $`rm -rf matrix-bot-1`.noThrow();
-await $`git clone --depth 1 https://github.com/sigmaSd/matrix-bot-1`;
+if (import.meta.main) {
+  // clean up and clone repo
+  await $`rm -rf matrix-bot-1`.noThrow();
+  await $`git clone --depth 1 https://github.com/sigmaSd/matrix-bot-1`;
 
-//FIXME: using nvim from github releases + jail fails in replit with GLIBC not found error
-const nvimPath = "nvim"; // just use nvim from nixpkgs for now
-// download latest neovim
-// const nvimPath = "download/nvim-linux64/bin/nvim";
-// if (!$.fs.existsSync(nvimPath)) {
-//   ensureDirSync("download");
-//   await $
-//     .request(
-//       "https://github.com/neovim/neovim/releases/download/v0.9.1/nvim-linux64.tar.gz",
-//     ).showProgress()
-//     .pipeToPath("download");
-//   await $`tar -xzf nvim-linux64.tar.gz`.cwd("download");
-// }
+  //FIXME: using nvim from github releases + jail fails in replit with GLIBC not found error
+  const nvimPath = "nvim"; // just use nvim from nixpkgs for now
+  // download latest neovim
+  // const nvimPath = "download/nvim-linux64/bin/nvim";
+  // if (!$.fs.existsSync(nvimPath)) {
+  //   ensureDirSync("download");
+  //   await $
+  //     .request(
+  //       "https://github.com/neovim/neovim/releases/download/v0.9.1/nvim-linux64.tar.gz",
+  //     ).showProgress()
+  //     .pipeToPath("download");
+  //   await $`tar -xzf nvim-linux64.tar.gz`.cwd("download");
+  // }
 
-// build nvim jail
-await $`cargo b --release --offline --target-dir target`
-  .cwd(
-    "./matrix-bot-1/nvim/jail",
-  );
-const jailLibPath = Deno.cwd() +
-  "/matrix-bot-1/nvim/jail/target/release/libjail.so";
+  // build nvim jail
+  await $`cargo b --release --offline --target-dir target`
+    .cwd(
+      "./matrix-bot-1/nvim/jail",
+    );
+  const jailLibPath = Deno.cwd() +
+    "/matrix-bot-1/nvim/jail/target/release/libjail.so";
 
-// keep replit instance alive (using uptimerobot to keep fetchig this server)
-serve(() => new Response("", { status: 200 }), { port: 8080 });
+  // keep replit instance alive (using uptimerobot to keep fetchig this server)
+  serve(() => new Response("", { status: 200 }), { port: 8080 });
 
-const denoPath = Deno.args[0] ?? "deno";
-// start matrix client
-await clientMain({ nvimPath, jailLibPath, denoPath });
+  const args = parse(Deno.args);
+  const denoPath = args["deno"] ?? "deno";
+  const commandTrigger = args["trigger"] ?? "!";
+  // start matrix client
+  await clientMain({ nvimPath, jailLibPath, denoPath, commandTrigger });
+}

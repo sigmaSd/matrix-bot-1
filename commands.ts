@@ -6,13 +6,16 @@ export abstract class MatrixCommand {
   protected abstract trigger: string;
   static description: string;
 
+  constructor(public commandTrigger: string) {
+  }
+
   async try_run(
     input: string,
   ): Promise<matrix.IContent | undefined> {
     input = input.trim();
-    if (input.startsWith(this.trigger)) {
+    if (input.startsWith(this.commandTrigger + this.trigger)) {
       return await this.run(
-        input.replace(this.trigger, "").trimStart(),
+        input.replace(this.commandTrigger + this.trigger, "").trimStart(),
       );
     }
   }
@@ -23,11 +26,11 @@ export abstract class MatrixCommand {
 }
 
 export class DenoCommand extends MatrixCommand {
-  override trigger = "!deno";
+  override trigger = "deno";
   static override description = "`!deno [input]`: Evaluate deno code";
 
-  constructor(public denoPath: string) {
-    super();
+  constructor(public commandTrigger: string, public denoPath: string) {
+    super(commandTrigger);
   }
 
   protected override async run(
@@ -71,7 +74,7 @@ export class DenoCommand extends MatrixCommand {
 }
 
 export class ArchWikiCommand extends MatrixCommand {
-  override trigger = "!archwiki";
+  override trigger = "archwiki";
   static override description = "`!archwiki [input]`: Search in arch wiki";
 
   protected override async run(
@@ -99,7 +102,7 @@ export class ArchWikiCommand extends MatrixCommand {
 }
 
 export class RequestCommand extends MatrixCommand {
-  override trigger = "!request";
+  override trigger = "request";
   static override description =
     "`!request [input]`: Request a new command, your input will be appended to a TODO file";
 
@@ -136,11 +139,11 @@ export class RequestCommand extends MatrixCommand {
  * Note: needs `MatrixClient` to upload the image
  */
 export class QrCommand extends MatrixCommand {
-  override trigger = "!qr";
+  override trigger = "qr";
   static override description = "`!qr [input]`: encode input into a QR image";
 
-  constructor(public client: MatrixClient) {
-    super();
+  constructor(public commandTrigger: string, public client: MatrixClient) {
+    super(commandTrigger);
   }
 
   protected override async run(
@@ -179,10 +182,14 @@ export class QrCommand extends MatrixCommand {
 }
 
 export class NvimEvalCommand extends MatrixCommand {
-  override trigger = "!nvim";
+  override trigger = "nvim";
   static override description = "`!nvim [input]`: Evaluate code in nvim";
-  constructor(public nvimPath: string, public jailLibPath: string) {
-    super();
+  constructor(
+    public commandTrigger: string,
+    public nvimPath: string,
+    public jailLibPath: string,
+  ) {
+    super(commandTrigger);
   }
 
   protected override async run(
@@ -236,7 +243,7 @@ export class NvimEvalCommand extends MatrixCommand {
 }
 
 export class HelpCommand extends MatrixCommand {
-  override trigger = "!help";
+  override trigger = "help";
   static override description = "`!help`: Show Help";
 
   protected override run(
