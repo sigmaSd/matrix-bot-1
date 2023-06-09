@@ -1,8 +1,7 @@
-import { $ } from "https://deno.land/x/dax@0.32.0/mod.ts";
-import { serve } from "https://deno.land/std@0.191.0/http/server.ts";
-import { main as clientMain } from "./client.ts";
-import { parse } from "https://deno.land/std@0.191.0/flags/mod.ts";
+import { $, parse, serve } from "./src/deps.ts";
+import { main as clientMain } from "./src/client.ts";
 
+$.setPrintCommand(true);
 if (import.meta.main) {
   // clean up and clone repo
   await $`rm -rf matrix-bot-1`.noThrow();
