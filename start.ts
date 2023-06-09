@@ -1,7 +1,6 @@
 import { $, parse, serve } from "./src/deps.ts";
 import { main as clientMain } from "./src/client.ts";
 
-$.setPrintCommand(true);
 if (import.meta.main) {
   // clean up and clone repo
   await $`rm -rf matrix-bot-1`.noThrow();
