@@ -164,8 +164,10 @@
   },
   "npm": {
     "specifiers": {
+      "adhan": "adhan@4.4.3",
       "matrix-js-sdk": "matrix-js-sdk@25.1.1",
       "matrix-js-sdk@26.0.1": "matrix-js-sdk@26.0.1",
+      "moment-timezone": "moment-timezone@0.5.40",
       "strip-ansi": "strip-ansi@7.1.0"
     },
     "packages": {
@@ -185,6 +187,10 @@
       },
       "@types/retry@0.12.0": {
         "integrity": "sha512-wWKOClTTiizcZhXnPY4wikVAwmdYHp8q6DmC+EJUzAMsycb7HB32Kh9RN4+0gExjmPmZSAQjgURXIGATPegAvA==",
+        "dependencies": {}
+      },
+      "adhan@4.4.3": {
+        "integrity": "sha512-568KkQd8OMLUj7o7+d2FDcm6vZHWQrE7vsm/Evssh8sfUDpPyaboj3PVsScZAr7L7sNRgPrtLMmDZZfM7VeAYw==",
         "dependencies": {}
       },
       "another-json@0.2.0": {
@@ -261,6 +267,16 @@
           "@types/events": "@types/events@3.0.0",
           "events": "events@3.3.0"
         }
+      },
+      "moment-timezone@0.5.40": {
+        "integrity": "sha512-tWfmNkRYmBkPJz5mr9GVDn9vRlVZOTe6yqY92rFxiOdWXbjaR0+9LwQnZGGuNR63X456NqmEkbskte8tWL5ePg==",
+        "dependencies": {
+          "moment": "moment@2.29.4"
+        }
+      },
+      "moment@2.29.4": {
+        "integrity": "sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w==",
+        "dependencies": {}
       },
       "p-retry@4.6.2": {
         "integrity": "sha512-312Id396EbJdvRONlngUx0NydfrIQ5lsYu0znKVUzVvArzEIt08V1qhtyESbGVd1FGX7UKtiFp5uwKZdM8wIuQ==",
