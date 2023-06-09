@@ -34,7 +34,7 @@ if (import.meta.main) {
   const args = parse(Deno.args);
   const denoPath = args["deno"] ?? "deno";
   const commandTrigger = args["trigger"] ?? "!";
-  const jailLibPath = args["--nvim-jail"]
+  const jailLibPath = args["nvim-jail"]
     ? Deno.cwd() +
       "/matrix-bot-1/nvim/jail/target/release/libjail.so"
     : undefined;
