@@ -1,6 +1,4 @@
-import { matrix } from "./deps.ts";
-import { qrcode } from "https://deno.land/x/qrcode@v2.0.0/mod.ts";
-import { ensureFile } from "https://deno.land/std@0.182.0/fs/ensure_file.ts";
+import { ensureFile, matrix, qrcode } from "./deps.ts";
 
 export abstract class MatrixCommand {
   protected abstract trigger: string;
