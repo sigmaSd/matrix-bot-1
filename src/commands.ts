@@ -191,6 +191,7 @@ export class NvimEvalCommand extends MatrixCommand {
     public commandTrigger: string,
     public nvimPath: string,
     public jailLibPath: string | undefined,
+    public nvimSourceFile: string | undefined,
   ) {
     super(commandTrigger);
   }
@@ -223,8 +224,7 @@ export class NvimEvalCommand extends MatrixCommand {
       args: [
         "--headless",
         "-c",
-        //FIXME: remove the hardcoded path
-        "so matrix-bot-1/src/nvim/screendump.lua",
+        this.nvimSourceFile ? `so ${this.nvimSourceFile}` : "",
         "-c",
         "set shada=",
         "--cmd",

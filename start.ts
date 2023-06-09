@@ -37,6 +37,14 @@ if (import.meta.main) {
     ? Deno.cwd() +
       "/matrix-bot-1/nvim/jail/target/release/libjail.so"
     : undefined;
+  const nvimSourceFile = Deno.cwd() + "/matrix-bot-1/src/nvim/screendump.lua";
+
   // start matrix client
-  await clientMain({ nvimPath, jailLibPath, denoPath, commandTrigger });
+  await clientMain({
+    nvimPath,
+    jailLibPath,
+    nvimSourceFile,
+    denoPath,
+    commandTrigger,
+  });
 }

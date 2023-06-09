@@ -16,8 +16,9 @@ import {
 } from "./commands.ts";
 
 export async function main(
-  { nvimPath, jailLibPath, denoPath, commandTrigger }: {
+  { nvimPath, jailLibPath, nvimSourceFile, denoPath, commandTrigger }: {
     nvimPath: string;
+    nvimSourceFile: string | undefined;
     jailLibPath: string | undefined;
     denoPath: string;
     commandTrigger: string;
@@ -37,7 +38,7 @@ export async function main(
 
   const commands: MatrixCommand[] = [
     new DenoCommand(commandTrigger, denoPath),
-    new NvimEvalCommand(commandTrigger, nvimPath, jailLibPath),
+    new NvimEvalCommand(commandTrigger, nvimPath, jailLibPath, nvimSourceFile),
     new ArchWikiCommand(commandTrigger),
     new QrCommand(commandTrigger, client),
     new RequestCommand(commandTrigger),
