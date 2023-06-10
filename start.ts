@@ -1,6 +1,7 @@
 import { $, parse, serve } from "./src/deps.ts";
 import { main as clientMain } from "./src/client.ts";
 
+$.setPrintCommand(true);
 if (import.meta.main) {
   // clean up and clone repo
   await $`rm -rf matrix-bot-1`.noThrow();
@@ -23,7 +24,7 @@ if (import.meta.main) {
   // build nvim jail
   await $`cargo b --release --offline --target-dir target`
     .cwd(
-      "./matrix-bot-1/nvim/jail",
+      "./matrix-bot-1/src/nvim/jail",
     );
 
   // keep replit instance alive (using uptimerobot to keep fetchig this server)
@@ -34,7 +35,7 @@ if (import.meta.main) {
   const commandTrigger = args["trigger"] ?? "!";
   const jailLibPath = args["nvim-jail"]
     ? Deno.cwd() +
-      "/matrix-bot-1/nvim/jail/target/release/libjail.so"
+      "/matrix-bot-1/src/nvim/jail/target/release/libjail.so"
     : undefined;
   const nvimSourceFile = Deno.cwd() + "/matrix-bot-1/src/nvim/screendump.lua";
 
