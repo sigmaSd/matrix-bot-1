@@ -54,7 +54,7 @@ export async function main(
     new QrCommand(commandTrigger, client),
     new RequestCommand(commandTrigger),
     new ZigCommand(commandTrigger, "zig"),
-    new HelpCommand(commandTrigger),
+    new HelpCommand(commandTrigger, safe),
   ];
   if (safe) commands = commands.filter((cmd) => cmd.security === "safe");
 

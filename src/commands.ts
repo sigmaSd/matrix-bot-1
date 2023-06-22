@@ -2,9 +2,13 @@ import { ensureFile, matrix, qrcode } from "./deps.ts";
 
 export abstract class MatrixCommand {
   /** Specify if this command can destroy the repl (unsafe) or not (safe).*/
-  abstract security: "safe" | "unsafe";
   protected abstract trigger: string;
   static description: string;
+  static security: "safe" | "unsafe";
+  get security() {
+    //@ts-ignore security exists
+    return this.constructor.security;
+  }
 
   constructor(public commandTrigger: string) {
   }
@@ -26,8 +30,54 @@ export abstract class MatrixCommand {
   ): Promise<matrix.IContent | undefined>;
 }
 
+// must be declared before the other classes
+export class HelpCommand extends MatrixCommand {
+  static override security = "safe" as const;
+  override trigger = "help";
+  static override description = "`!help`: Show Help";
+  static commandDescriptions: Omit<typeof MatrixCommand, "constructor">[] = [];
+
+  constructor(
+    public override commandTrigger: string,
+    public safe: boolean,
+  ) {
+    super(commandTrigger);
+  }
+
+  protected override run(
+    _input: string,
+  ): Promise<matrix.IContent> {
+    const header = `IBot
+
+code: https://github.com/sigmaSd/matrix-bot-1
+hosted-on: https://replit.com/@sigmasd/matrixBot
+
+commands:
+`;
+    const output = HelpCommand.commandDescriptions
+      // show unsafe command only if we're in unsafe mode
+      .filter((cmd) => !this.safe ? true : (cmd.security === "safe"))
+      .map((cmd) => cmd.description)
+      .concat(HelpCommand.description)
+      .join("\n");
+
+    return Promise.resolve({
+      msgtype: "m.text",
+      format: "org.matrix.custom.html",
+      formatted_body: "<pre><code>" +
+        header + output + "</code></pre>",
+      body: header + output,
+    });
+  }
+}
+
+function Command(cmd: Omit<typeof MatrixCommand, "constructor">) {
+  HelpCommand.commandDescriptions.push(cmd);
+}
+
+@Command
 export class DenoCommand extends MatrixCommand {
-  override security = "safe" as const;
+  static override security = "safe" as const;
   override trigger = "deno";
   static override description = "`!deno [input]`: Evaluate deno code";
 
@@ -75,8 +125,9 @@ export class DenoCommand extends MatrixCommand {
   }
 }
 
+@Command
 export class ArchWikiCommand extends MatrixCommand {
-  override security = "safe" as const;
+  static override security = "safe" as const;
   override trigger = "archwiki";
   static override description = "`!archwiki [input]`: Search in arch wiki";
 
@@ -104,8 +155,9 @@ export class ArchWikiCommand extends MatrixCommand {
   }
 }
 
+@Command
 export class RequestCommand extends MatrixCommand {
-  override security = "safe" as const;
+  static override security = "safe" as const;
   override trigger = "request";
   static override description =
     "`!request [input]`: Request a new command, your input will be appended to a TODO file";
@@ -142,8 +194,9 @@ export class RequestCommand extends MatrixCommand {
  *
  * Note: needs `MatrixClient` to upload the image
  */
+@Command
 export class QrCommand extends MatrixCommand {
-  override security = "safe" as const;
+  static override security = "safe" as const;
   override trigger = "qr";
   static override description = "`!qr [input]`: encode input into a QR image";
 
@@ -189,8 +242,9 @@ export class QrCommand extends MatrixCommand {
   }
 }
 
+@Command
 export class NvimEvalCommand extends MatrixCommand {
-  override security = "safe" as const; // TODO change to unsafe and remove all the jail stuff
+  static override security = "safe" as const; // TODO change to unsafe and remove all the jail stuff
   override trigger = "nvim";
   static override description = "`!nvim [input]`: Evaluate code in nvim";
   constructor(
@@ -254,8 +308,10 @@ export class NvimEvalCommand extends MatrixCommand {
     }
   }
 }
+
+@Command
 export class ZigCommand extends MatrixCommand {
-  override security = "unsafe" as const;
+  static override security = "unsafe" as const;
   override trigger = "zig";
   static override description = "`!zig [input]`: Evaluate zig code";
 
@@ -306,42 +362,5 @@ pub fn main() !void {
       return new TextDecoder().decode(output.stdout);
     }
     return new TextDecoder().decode(output.stderr);
-  }
-}
-
-export class HelpCommand extends MatrixCommand {
-  override security = "safe" as const;
-  override trigger = "help";
-  static override description = "`!help`: Show Help";
-
-  protected override run(
-    _input: string,
-  ): Promise<matrix.IContent> {
-    const header = `IBot
-
-code: https://github.com/sigmaSd/matrix-bot-1
-hosted-on: https://replit.com/@sigmasd/matrixBot
-
-commands:
-`;
-    const output = [
-      ArchWikiCommand,
-      DenoCommand,
-      NvimEvalCommand,
-      QrCommand,
-      RequestCommand,
-      ZigCommand,
-      HelpCommand, // make sure help is the last one
-    ]
-      .map((cmd) => cmd.description)
-      .join("\n");
-
-    return Promise.resolve({
-      msgtype: "m.text",
-      format: "org.matrix.custom.html",
-      formatted_body: "<pre><code>" +
-        header + output + "</code></pre>",
-      body: header + output,
-    });
   }
 }
