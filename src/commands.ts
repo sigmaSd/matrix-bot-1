@@ -14,6 +14,7 @@ export abstract class MatrixCommand {
   ): Promise<matrix.IContent | undefined> {
     input = input.trim();
     if (input.startsWith(this.commandTrigger + this.trigger)) {
+      console.log("Running command with trigger:", this.trigger);
       return await this.run(
         input.replace(this.commandTrigger + this.trigger, "").trimStart(),
       );
@@ -329,6 +330,7 @@ commands:
       NvimEvalCommand,
       QrCommand,
       RequestCommand,
+      ZigCommand,
       HelpCommand, // make sure help is the last one
     ]
       .map((cmd) => cmd.description)

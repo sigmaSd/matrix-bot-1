@@ -38,6 +38,7 @@ if (import.meta.main) {
       "/matrix-bot-1/src/nvim/jail/target/release/libjail.so"
     : undefined;
   const nvimSourceFile = Deno.cwd() + "/matrix-bot-1/src/nvim/screendump.lua";
+  const safe = (!args.safe || args.safe === "true") ? true : false;
 
   // start matrix client
   await clientMain({
@@ -50,6 +51,6 @@ if (import.meta.main) {
     deno: {
       denoPath,
     },
-    safe: args.safe ?? true,
+    safe,
   });
 }
