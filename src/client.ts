@@ -22,6 +22,7 @@ export async function main(
     nvim: { nvimPath, jailLibPath, nvimSourceFile },
     deno: { denoPath },
     safe,
+    hostUrl,
   }: {
     commandTrigger: string;
     nvim: {
@@ -33,6 +34,7 @@ export async function main(
       denoPath: string;
     };
     safe: boolean;
+    hostUrl: string;
   },
 ) {
   if (!access_token || !bot_user || !homeserver) {
@@ -54,7 +56,7 @@ export async function main(
     new QrCommand(commandTrigger, client),
     new RequestCommand(commandTrigger),
     new ZigCommand(commandTrigger, "zig"),
-    new HelpCommand(commandTrigger, safe),
+    new HelpCommand(commandTrigger, safe, hostUrl),
   ];
   if (safe) commands = commands.filter((cmd) => cmd.security === "safe");
 

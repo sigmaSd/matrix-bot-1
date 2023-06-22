@@ -40,6 +40,7 @@ export class HelpCommand extends MatrixCommand {
   constructor(
     public override commandTrigger: string,
     public safe: boolean,
+    public hostUrl: string,
   ) {
     super(commandTrigger);
   }
@@ -50,7 +51,7 @@ export class HelpCommand extends MatrixCommand {
     const header = `IBot
 
 code: https://github.com/sigmaSd/matrix-bot-1
-hosted-on: https://replit.com/@sigmasd/matrixBot
+hosted-on: ${this.hostUrl}
 
 commands:
 `;

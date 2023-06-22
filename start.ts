@@ -52,5 +52,6 @@ if (import.meta.main) {
       denoPath,
     },
     safe,
+    hostUrl: args["host-url"] ?? "",
   });
 }
