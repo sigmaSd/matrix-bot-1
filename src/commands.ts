@@ -34,7 +34,7 @@ export abstract class MatrixCommand {
 export class HelpCommand extends MatrixCommand {
   static override security = "safe" as const;
   override trigger = "help";
-  static override description = "`!help`: Show Help";
+  static override description = "help: Show Help";
   static commandDescriptions: Omit<typeof MatrixCommand, "constructor">[] = [];
 
   constructor(
@@ -57,8 +57,8 @@ commands:
     const output = HelpCommand.commandDescriptions
       // show unsafe command only if we're in unsafe mode
       .filter((cmd) => !this.safe ? true : (cmd.security === "safe"))
-      .map((cmd) => cmd.description)
-      .concat(HelpCommand.description)
+      .map((cmd) => this.commandTrigger + cmd.description)
+      .concat(this.commandTrigger + HelpCommand.description)
       .join("\n");
 
     return Promise.resolve({
@@ -79,7 +79,7 @@ function Command(cmd: Omit<typeof MatrixCommand, "constructor">) {
 export class DenoCommand extends MatrixCommand {
   static override security = "safe" as const;
   override trigger = "deno";
-  static override description = "`!deno [input]`: Evaluate deno code";
+  static override description = "deno [input]: Evaluate deno code";
 
   constructor(public override commandTrigger: string, public denoPath: string) {
     super(commandTrigger);
@@ -129,7 +129,7 @@ export class DenoCommand extends MatrixCommand {
 export class ArchWikiCommand extends MatrixCommand {
   static override security = "safe" as const;
   override trigger = "archwiki";
-  static override description = "`!archwiki [input]`: Search in arch wiki";
+  static override description = "archwiki [input]: Search in arch wiki";
 
   protected override async run(
     input: string,
@@ -160,7 +160,7 @@ export class RequestCommand extends MatrixCommand {
   static override security = "safe" as const;
   override trigger = "request";
   static override description =
-    "`!request [input]`: Request a new command, your input will be appended to a TODO file";
+    "request [input]: Request a new command, your input will be appended to a TODO file";
 
   protected override async run(
     input: string,
@@ -198,7 +198,7 @@ export class RequestCommand extends MatrixCommand {
 export class QrCommand extends MatrixCommand {
   static override security = "safe" as const;
   override trigger = "qr";
-  static override description = "`!qr [input]`: encode input into a QR image";
+  static override description = "qr [input]: encode input into a QR image";
 
   constructor(
     public override commandTrigger: string,
@@ -246,7 +246,7 @@ export class QrCommand extends MatrixCommand {
 export class NvimEvalCommand extends MatrixCommand {
   static override security = "safe" as const; // TODO change to unsafe and remove all the jail stuff
   override trigger = "nvim";
-  static override description = "`!nvim [input]`: Evaluate code in nvim";
+  static override description = "nvim [input]: Evaluate code in nvim";
   constructor(
     public override commandTrigger: string,
     public nvimPath: string,
@@ -313,7 +313,7 @@ export class NvimEvalCommand extends MatrixCommand {
 export class ZigCommand extends MatrixCommand {
   static override security = "unsafe" as const;
   override trigger = "zig";
-  static override description = "`!zig [input]`: Evaluate zig code";
+  static override description = "zig [input]: Evaluate zig code";
 
   constructor(public override commandTrigger: string, public zigPath: string) {
     super(commandTrigger);
