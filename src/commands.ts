@@ -101,7 +101,6 @@ export class DenoCommand extends MatrixCommand {
   }
 
   async denoEval(input: string, denoPath: string): Promise<string> {
-    input = input.trim();
     // special case markdown markers
     if (input.startsWith("```")) {
       input = input.split("\n").slice(1, -1).join("\n");
@@ -335,7 +334,6 @@ export class ZigCommand extends MatrixCommand {
   }
 
   async zigEval(input: string, zigPath: string): Promise<string> {
-    input = input.trim();
     // special case markdown markers
     if (input.startsWith("```")) {
       input = input.split("\n").slice(1, -1).join("\n");
