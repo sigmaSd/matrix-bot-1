@@ -50,5 +50,6 @@ if (import.meta.main) {
     deno: {
       denoPath,
     },
+    safe: args.safe ?? true,
   });
 }

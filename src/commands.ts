@@ -1,6 +1,8 @@
 import { ensureFile, matrix, qrcode } from "./deps.ts";
 
 export abstract class MatrixCommand {
+  /** Specify if this command can destroy the repl (unsafe) or not (safe).*/
+  abstract security: "safe" | "unsafe";
   protected abstract trigger: string;
   static description: string;
 
@@ -24,6 +26,7 @@ export abstract class MatrixCommand {
 }
 
 export class DenoCommand extends MatrixCommand {
+  security = "safe" as const;
   override trigger = "deno";
   static override description = "`!deno [input]`: Evaluate deno code";
 
@@ -72,6 +75,7 @@ export class DenoCommand extends MatrixCommand {
 }
 
 export class ArchWikiCommand extends MatrixCommand {
+  security = "safe" as const;
   override trigger = "archwiki";
   static override description = "`!archwiki [input]`: Search in arch wiki";
 
@@ -100,6 +104,7 @@ export class ArchWikiCommand extends MatrixCommand {
 }
 
 export class RequestCommand extends MatrixCommand {
+  security = "safe" as const;
   override trigger = "request";
   static override description =
     "`!request [input]`: Request a new command, your input will be appended to a TODO file";
@@ -137,6 +142,7 @@ export class RequestCommand extends MatrixCommand {
  * Note: needs `MatrixClient` to upload the image
  */
 export class QrCommand extends MatrixCommand {
+  security = "safe" as const;
   override trigger = "qr";
   static override description = "`!qr [input]`: encode input into a QR image";
 
@@ -183,6 +189,7 @@ export class QrCommand extends MatrixCommand {
 }
 
 export class NvimEvalCommand extends MatrixCommand {
+  security = "safe" as const; // TODO change to unsafe and remove all the jail stuff
   override trigger = "nvim";
   static override description = "`!nvim [input]`: Evaluate code in nvim";
   constructor(
@@ -246,8 +253,63 @@ export class NvimEvalCommand extends MatrixCommand {
     }
   }
 }
+export class ZigCommand extends MatrixCommand {
+  security = "unsafe" as const;
+  override trigger = "zig";
+  static override description = "`!zig [input]`: Evaluate zig code";
+
+  constructor(public commandTrigger: string, public zigPath: string) {
+    super(commandTrigger);
+  }
+
+  protected override async run(
+    input: string,
+  ): Promise<matrix.IContent> {
+    const output = await this.zigEval(input, this.zigPath);
+    return {
+      msgtype: "m.text",
+      format: "org.matrix.custom.html",
+      formatted_body: '<pre><code class="language-rs">' + // no zig highlights yet
+        output + "</code></pre>",
+      body: output,
+    };
+  }
+
+  async zigEval(input: string, zigPath: string): Promise<string> {
+    input = input.trim();
+    // special case markdown markers
+    if (input.startsWith("```")) {
+      input = input.split("\n").slice(1, -1).join("\n");
+    }
+
+    const f = await Deno.makeTempFile({ suffix: ".zig" });
+    const fullCode = `\
+const std = @import("std");
+const print = std.debug.print;
+pub fn main() !void {
+  ${input}
+}
+  `;
+    await Deno.writeTextFile(f, fullCode);
+
+    const controller = new AbortController();
+    setTimeout(() => controller.abort(), 10000); // timeout
+    const output = await new Deno.Command(zigPath, {
+      args: ["run", f],
+      signal: controller.signal,
+    }).output();
+
+    await Deno.remove(f);
+
+    if (output.stdout.length !== 0) {
+      return new TextDecoder().decode(output.stdout);
+    }
+    return new TextDecoder().decode(output.stderr);
+  }
+}
 
 export class HelpCommand extends MatrixCommand {
+  security = "safe" as const;
   override trigger = "help";
   static override description = "`!help`: Show Help";
 

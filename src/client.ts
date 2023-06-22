@@ -13,6 +13,7 @@ import {
   NvimEvalCommand,
   QrCommand,
   RequestCommand,
+  ZigCommand,
 } from "./commands.ts";
 
 export async function main(
@@ -20,6 +21,7 @@ export async function main(
     commandTrigger,
     nvim: { nvimPath, jailLibPath, nvimSourceFile },
     deno: { denoPath },
+    safe,
   }: {
     commandTrigger: string;
     nvim: {
@@ -30,6 +32,7 @@ export async function main(
     deno: {
       denoPath: string;
     };
+    safe: boolean;
   },
 ) {
   if (!access_token || !bot_user || !homeserver) {
@@ -44,14 +47,16 @@ export async function main(
 
   remove_secrets(); // remove env variables
 
-  const commands: MatrixCommand[] = [
+  let commands: MatrixCommand[] = [
     new DenoCommand(commandTrigger, denoPath),
     new NvimEvalCommand(commandTrigger, nvimPath, jailLibPath, nvimSourceFile),
     new ArchWikiCommand(commandTrigger),
     new QrCommand(commandTrigger, client),
     new RequestCommand(commandTrigger),
+    new ZigCommand(commandTrigger, "zig"),
     new HelpCommand(commandTrigger),
   ];
+  if (safe) commands = commands.filter((cmd) => cmd.security === "safe");
 
   // @ts-ignore NOTE: why does this not type check
   client.on("event", async (event: matrix.MatrixEvent) => {
