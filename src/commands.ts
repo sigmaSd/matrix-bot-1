@@ -27,11 +27,11 @@ export abstract class MatrixCommand {
 }
 
 export class DenoCommand extends MatrixCommand {
-  security = "safe" as const;
+  override security = "safe" as const;
   override trigger = "deno";
   static override description = "`!deno [input]`: Evaluate deno code";
 
-  constructor(public commandTrigger: string, public denoPath: string) {
+  constructor(public override commandTrigger: string, public denoPath: string) {
     super(commandTrigger);
   }
 
@@ -76,7 +76,7 @@ export class DenoCommand extends MatrixCommand {
 }
 
 export class ArchWikiCommand extends MatrixCommand {
-  security = "safe" as const;
+  override security = "safe" as const;
   override trigger = "archwiki";
   static override description = "`!archwiki [input]`: Search in arch wiki";
 
@@ -105,7 +105,7 @@ export class ArchWikiCommand extends MatrixCommand {
 }
 
 export class RequestCommand extends MatrixCommand {
-  security = "safe" as const;
+  override security = "safe" as const;
   override trigger = "request";
   static override description =
     "`!request [input]`: Request a new command, your input will be appended to a TODO file";
@@ -143,12 +143,12 @@ export class RequestCommand extends MatrixCommand {
  * Note: needs `MatrixClient` to upload the image
  */
 export class QrCommand extends MatrixCommand {
-  security = "safe" as const;
+  override security = "safe" as const;
   override trigger = "qr";
   static override description = "`!qr [input]`: encode input into a QR image";
 
   constructor(
-    public commandTrigger: string,
+    public override commandTrigger: string,
     public client: matrix.MatrixClient,
   ) {
     super(commandTrigger);
@@ -190,11 +190,11 @@ export class QrCommand extends MatrixCommand {
 }
 
 export class NvimEvalCommand extends MatrixCommand {
-  security = "safe" as const; // TODO change to unsafe and remove all the jail stuff
+  override security = "safe" as const; // TODO change to unsafe and remove all the jail stuff
   override trigger = "nvim";
   static override description = "`!nvim [input]`: Evaluate code in nvim";
   constructor(
-    public commandTrigger: string,
+    public override commandTrigger: string,
     public nvimPath: string,
     public jailLibPath: string | undefined,
     public nvimSourceFile: string | undefined,
@@ -255,11 +255,11 @@ export class NvimEvalCommand extends MatrixCommand {
   }
 }
 export class ZigCommand extends MatrixCommand {
-  security = "unsafe" as const;
+  override security = "unsafe" as const;
   override trigger = "zig";
   static override description = "`!zig [input]`: Evaluate zig code";
 
-  constructor(public commandTrigger: string, public zigPath: string) {
+  constructor(public override commandTrigger: string, public zigPath: string) {
     super(commandTrigger);
   }
 
@@ -310,7 +310,7 @@ pub fn main() !void {
 }
 
 export class HelpCommand extends MatrixCommand {
-  security = "safe" as const;
+  override security = "safe" as const;
   override trigger = "help";
   static override description = "`!help`: Show Help";
 
