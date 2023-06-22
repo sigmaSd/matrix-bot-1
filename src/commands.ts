@@ -1,11 +1,12 @@
 import { ensureFile, matrix, qrcode } from "./deps.ts";
 
 export abstract class MatrixCommand {
-  /** Specify if this command can destroy the repl (unsafe) or not (safe).*/
   protected abstract trigger: string;
   static description: string;
+  /** Specify if this command can destroy the repl (unsafe) or not (safe).*/
   static security: "safe" | "unsafe";
-  get security() {
+  /** Specify if this command can destroy the repl (unsafe) or not (safe).*/
+  get security(): typeof MatrixCommand.security {
     //@ts-ignore security exists
     return this.constructor.security;
   }
