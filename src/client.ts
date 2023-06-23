@@ -57,7 +57,7 @@ export async function main(
     new QrCommand(commandTrigger, client),
     new RequestCommand(commandTrigger),
     new ZigCommand(commandTrigger, "zig"),
-    new NimCommand(commandTrigger, "nim"),
+    // new NimCommand(commandTrigger, "nim"), // very slow on replit
     new HelpCommand(commandTrigger, safe, hostUrl),
   ];
   if (safe) commands = commands.filter((cmd) => cmd.security === "safe");
