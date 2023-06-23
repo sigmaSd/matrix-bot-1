@@ -364,3 +364,51 @@ pub fn main() !void {
     return new TextDecoder().decode(output.stderr);
   }
 }
+
+@Command
+export class NimCommand extends MatrixCommand {
+  static override security = "unsafe" as const;
+  override trigger = "nim";
+  static override description = "nim [input]: Evaluate nim code";
+
+  constructor(public override commandTrigger: string, public nimPath: string) {
+    super(commandTrigger);
+  }
+
+  protected override async run(
+    input: string,
+  ): Promise<matrix.IContent> {
+    const output = await this.nimEval(input, this.nimPath);
+    return {
+      msgtype: "m.text",
+      format: "org.matrix.custom.html",
+      formatted_body: '<pre><code class="language-nim">' + // no zig highlights yet
+        output + "</code></pre>",
+      body: output,
+    };
+  }
+
+  async nimEval(input: string, nimPath: string): Promise<string> {
+    // special case markdown markers
+    if (input.startsWith("```")) {
+      input = input.split("\n").slice(1, -1).join("\n");
+    }
+
+    const f = await Deno.makeTempFile({ suffix: ".nim" });
+    await Deno.writeTextFile(f, input);
+
+    const controller = new AbortController();
+    setTimeout(() => controller.abort(), 10000); // timeout
+    const output = await new Deno.Command(nimPath, {
+      args: ["c", "--verbosity:0", "-r", f],
+      signal: controller.signal,
+    }).output();
+
+    await Deno.remove(f);
+
+    if (output.stdout.length !== 0) {
+      return new TextDecoder().decode(output.stdout);
+    }
+    return new TextDecoder().decode(output.stderr);
+  }
+}

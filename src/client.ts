@@ -10,6 +10,7 @@ import {
   DenoCommand,
   HelpCommand,
   MatrixCommand,
+  NimCommand,
   NvimEvalCommand,
   QrCommand,
   RequestCommand,
@@ -56,6 +57,7 @@ export async function main(
     new QrCommand(commandTrigger, client),
     new RequestCommand(commandTrigger),
     new ZigCommand(commandTrigger, "zig"),
+    new NimCommand(commandTrigger, "nim"),
     new HelpCommand(commandTrigger, safe, hostUrl),
   ];
   if (safe) commands = commands.filter((cmd) => cmd.security === "safe");
