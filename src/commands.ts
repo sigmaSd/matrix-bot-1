@@ -394,7 +394,7 @@ export class NimCommand extends MatrixCommand {
       input = input.split("\n").slice(1, -1).join("\n");
     }
 
-    const f = await Deno.makeTempFile({ suffix: ".nim" });
+    const f = await Deno.makeTempFile({ prefix: "nim", suffix: ".nim" }); // nim requires alpha prefix
     await Deno.writeTextFile(f, input);
 
     const controller = new AbortController();
