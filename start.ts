@@ -31,7 +31,8 @@ if (import.meta.main) {
   serve(() => new Response("", { status: 200 }), { port: 8080 });
 
   const args = parse(Deno.args);
-  const denoPath = args["deno"] ?? "deno";
+  const denoPath = args["deno-path"] ?? "deno";
+  const nimPath = args["nim-path"] ?? "nim";
   const commandTrigger = args["trigger"] ?? "!";
   const jailLibPath = args["nvim-jail"]
     ? Deno.cwd() +
@@ -50,6 +51,9 @@ if (import.meta.main) {
     },
     deno: {
       denoPath,
+    },
+    nim: {
+      nimPath,
     },
     safe,
     hostUrl: args["host-url"] ?? "",

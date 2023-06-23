@@ -22,6 +22,7 @@ export async function main(
     commandTrigger,
     nvim: { nvimPath, jailLibPath, nvimSourceFile },
     deno: { denoPath },
+    nim: { nimPath },
     safe,
     hostUrl,
   }: {
@@ -33,6 +34,9 @@ export async function main(
     };
     deno: {
       denoPath: string;
+    };
+    nim: {
+      nimPath: string;
     };
     safe: boolean;
     hostUrl: string;
@@ -57,7 +61,7 @@ export async function main(
     new QrCommand(commandTrigger, client),
     new RequestCommand(commandTrigger),
     new ZigCommand(commandTrigger, "zig"),
-    // new NimCommand(commandTrigger, "nim"), // very slow on replit
+    new NimCommand(commandTrigger, nimPath),
     new HelpCommand(commandTrigger, safe, hostUrl),
   ];
   if (safe) commands = commands.filter((cmd) => cmd.security === "safe");
