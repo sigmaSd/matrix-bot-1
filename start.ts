@@ -8,7 +8,7 @@ if (import.meta.main) {
   await $`git clone --depth 1 https://github.com/sigmaSd/matrix-bot-1`;
 
   //FIXME: using nvim from github releases + jail fails in replit with GLIBC not found error
-  const nvimPath = "nvim"; // just use nvim from nixpkgs for now
+  // const nvimPath = "nvim"; // just use nvim from nixpkgs for now
   // download latest neovim
   // const nvimPath = "download/nvim-linux64/bin/nvim";
   // if (!$.fs.existsSync(nvimPath)) {
@@ -21,11 +21,11 @@ if (import.meta.main) {
   //   await $`tar -xzf nvim-linux64.tar.gz`.cwd("download");
   // }
 
-  // build nvim jail
-  await $`cargo b --release --offline --target-dir target`
-    .cwd(
-      "./matrix-bot-1/src/nvim/jail",
-    );
+  // // build nvim jail
+  // await $`cargo b --release --offline --target-dir target`
+  //   .cwd(
+  //     "./matrix-bot-1/src/nvim/jail",
+  //   );
 
   // keep replit instance alive (using uptimerobot to keep fetchig this server)
   serve(() => new Response("", { status: 200 }), { port: 8080 });
@@ -33,11 +33,8 @@ if (import.meta.main) {
   const args = parse(Deno.args);
   const denoPath = args["deno-path"] ?? "deno";
   const nimPath = args["nim-path"] ?? "nim";
+  const nvimPath = args["nvim-path"] ?? "nvim";
   const commandTrigger = args["trigger"] ?? "!";
-  const jailLibPath = args["nvim-jail"]
-    ? Deno.cwd() +
-      "/matrix-bot-1/src/nvim/jail/target/release/libjail.so"
-    : undefined;
   const nvimSourceFile = Deno.cwd() + "/matrix-bot-1/src/nvim/screendump.lua";
   const safe = (!args.safe || args.safe === "true") ? true : false;
 
@@ -46,7 +43,6 @@ if (import.meta.main) {
     commandTrigger,
     nvim: {
       nvimPath,
-      jailLibPath,
       nvimSourceFile,
     },
     deno: {

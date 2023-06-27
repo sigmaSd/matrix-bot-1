@@ -245,13 +245,12 @@ export class QrCommand extends MatrixCommand {
 
 @Command
 export class NvimEvalCommand extends MatrixCommand {
-  static override security = "safe" as const; // TODO change to unsafe and remove all the jail stuff
+  static override security = "unsafe" as const;
   override trigger = "nvim";
   static override description = "nvim [input]: Evaluate code in nvim";
   constructor(
     public override commandTrigger: string,
     public nvimPath: string,
-    public jailLibPath: string | undefined,
     public nvimSourceFile: string | undefined,
   ) {
     super(commandTrigger);
@@ -263,7 +262,6 @@ export class NvimEvalCommand extends MatrixCommand {
     const output = await this.nvimEval(
       input,
       this.nvimPath,
-      this.jailLibPath,
     );
     if (!output) return;
     const capedOutput = output.slice(0, 8 * 1024);
@@ -279,7 +277,6 @@ export class NvimEvalCommand extends MatrixCommand {
   async nvimEval(
     param: string,
     nvimPath: string,
-    jailLibPath: string | undefined,
   ) {
     const cmd = await new Deno.Command(nvimPath, {
       args: [
@@ -295,7 +292,6 @@ export class NvimEvalCommand extends MatrixCommand {
       ],
       stdout: "piped",
       stderr: "piped",
-      env: jailLibPath ? { "LD_PRELOAD": jailLibPath } : {},
     }).output();
 
     let output;
