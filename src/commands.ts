@@ -301,7 +301,7 @@ export class NvimEvalCommand extends MatrixCommand {
       output = new TextDecoder().decode(cmd.stderr);
     }
     if (output) {
-      return (output);
+      return output;
     }
   }
 }
